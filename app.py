@@ -12,6 +12,7 @@ from resources.reaction import blp as ReactionBlueprint
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from flask_migrate import Migrate
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -29,9 +30,9 @@ def create_app(db_url=None):
 
     db.init_app(app)
     api = Api(app)
-
-    # with app.app_context():
-    #     db.create_all()
+    migrate = Migrate(app, db)
+    with app.app_context():
+        db.create_all()
 
     # Register API Blueprints
     api.register_blueprint(ChemicalBlueprint)
@@ -75,7 +76,7 @@ class MyKivyApp(App):
 
     def get_reaction_data(self, instance):
         try:
-            response = requests.get("http://127.0.0.1:5000/reaction")
+            response = requests.get("http://127.0.0.1:5000/get_all_reactions")
             if response.status_code == 200:
                 self.reaction_button.text = response.json().get("message", "Reaction data retrieved")
             else:
