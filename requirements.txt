@@ -5,3 +5,5 @@ flask-smorest
 python-dotenv
 requests
 kivy
+flask-migrate
+alembic~=1.10.4
